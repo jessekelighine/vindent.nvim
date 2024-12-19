@@ -1,6 +1,7 @@
 # vindent.nvim
 
-`vindent.nvim` is Neovim plugin that provides indentation related *motions* and *text objects*:
+[`vindent.nvim`](https://github.com/jessekelighine/vindent.nvim)
+is Neovim plugin that provides indentation related *motions* and *text objects*:
 
 1. **Motions**: jump to specific positions defined by indentations.
 	- Jump to previous/next line with *same*, *less*, *more*, or *different* indentation.
@@ -49,25 +50,25 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim):
 With these keybindings, you can now...
 
 1. **Vindent Motions**:
-	- Jump to previous/next block with same indentation with `[=`/`]=`. ([examples](#vindent-motion-block-wise))
-	- Jump to previous/next line with less indentation with `[-`/`]-`. ([examples](#vindent-motion-line-wise))
-	- Jump to previous/next line with more indentation with `[+`/`]+`. ([examples](#vindent-motion-line-wise))
-	- Jump to previous/next line with different indentation with `[;`/`];`. ([examples](#vindent-motion-line-wise))
-	- Jump to start/end of text block with `[p`/`]p`. ([examples](#vindent-motion-block-wise))
+	- Jump to previous/next block with same indentation with `[=`/`]=`. ([examples](#block-wise-motions))
+	- Jump to previous/next line with less indentation with `[-`/`]-`. ([examples](#line-wise-motions))
+	- Jump to previous/next line with more indentation with `[+`/`]+`. ([examples](#line-wise-motions))
+	- Jump to previous/next line with different indentation with `[;`/`];`. ([examples](#line-wise-motions))
+	- Jump to start/end of text block with `[p`/`]p`. ([examples](#block-wise-motions))
 2. **Vindent Text Objects**: Select text block with `ii` (*in indent*),`ai`
-   (*an indent*), and `aI` (*an Indent*). ([examples](#vindent-text-object))
+   (*an indent*), and `aI` (*an Indent*). ([examples](#text-objects))
 
 ## Usage
 
 In this section, we will assume that the keybindings defined in
 [quick start](#installation-and-quick-start) are used for all the examples.
 
-### Vindent Motion: Line-wise
+### Line-wise Motions
 
 These motions are self explanatory: move to the previous or next line with
 *same*, *less*, *more*, or *different* indentation.
 
-#### Example: Line-wise Motions
+#### Line-wise Motions: Examples
 
 ```python
  1 def SumTo():
@@ -87,7 +88,7 @@ These motions are self explanatory: move to the previous or next line with
 - If cursor is on line 10, `[+` moves it to line 7.
 - If cursor is on line 1, `2]+` moves it to line 7.
 
-#### List of Line-wise Motions
+#### Line-wise Motions: Full List
 
 ```vim
 <Plug>(VindentMotion_more_prev)
@@ -100,14 +101,14 @@ These motions are self explanatory: move to the previous or next line with
 <Plug>(VindentMotion_same_next)
 ```
 
-### Vindent Motion: Block-wise
+### Block-wise Motions
 
 `vindent.nvim` provides two types of text objects:
 
 | Motion            | Description                                         |
 | :---              | :---                                                |
 | `BlockMotion`     | move to the previous/next text block of same indent |
-| `BlockEdgeMotion` | move to the beginning/end of the current text block |
+| `BlockEdgeMotion` | move to the beginning/end of current text block     |
 
 All motions and objects that operates *block-wise* contains a two-character
 string of `O`'s and `X`'s in their names. This string indicates how the motion
@@ -125,7 +126,7 @@ text block. That is,
 
 See the example below.
 
-#### Examples: Block-wise Motions
+#### Block-wise Motions: Examples
 
 ```lua
  1 local SumTo = function(number)
@@ -151,7 +152,7 @@ is because `]p` is mapped to `<Plug>(VindentBlockEdgeMotion_XX_next)`, where
 `XX` indicates that "empty lines" and "more-indented lines" are all ignored
 (not boundaries), thus line 2 to line 9 is considered to be one text block.
 
-#### List of Block-wise Motions
+#### Block-wise Motions: Full List
 
 ```vim
 <Plug>(VindentBlockMotion_OO_prev)
@@ -173,7 +174,7 @@ is because `]p` is mapped to `<Plug>(VindentBlockEdgeMotion_XX_next)`, where
 <Plug>(VindentBlockEdgeMotion_XX_next)
 ```
 
-### Vindent Text Object
+### Text Objects
 
 `vindent.nvim` provides three types of text objects:
 
@@ -185,12 +186,12 @@ is because `]p` is mapped to `<Plug>(VindentBlockEdgeMotion_XX_next)`, where
 
 Object `ai` is useful for selecting something like a Python function, and `aI`
 is useful for selecting something like a Lua function. As detailed in
-[block-wise motions](#vindent-motion-block-wise), you can change what is
+[block-wise motions](#block-wise-motions), you can change what is
 considered to be a *text block* by changing the `O`'s and `X`'s in the `<Plug>` names.
 Also, all text objects can take `[count]`, which makes the text objects select
 `[count]` additional indent levels around. See the example below.
 
-#### Examples: Text Objects
+#### Text Objects: Examples
 
 ```lua
  1 local SumTo = function(number)
@@ -215,7 +216,7 @@ Also, all text objects can take `[count]`, which makes the text objects select
 - If the cursor is on line 5 and this code snippet is the entire file,
   then `v2ii` selects lines 1-11 (two extra indent levels)
 
-#### List of Text Objects
+#### Text Objects: Full List
 
 ```vim
 <Plug>(VindentObject_OO_ii)
