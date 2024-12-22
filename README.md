@@ -213,8 +213,38 @@ Also, all text objects can take `[count]`, which makes the text objects select
 - If the cursor is on line 5, `v1ii` selects lines 3-10. (one extra indent level)
 - If the cursor is on line 5, `v1ai` selects lines 1-10. (one extra indent level)
 - If the cursor is on line 5, `v1aI` selects lines 1-11. (one extra indent level)
-- If the cursor is on line 5 and this code snippet is the entire file,
-  then `v2ii` selects lines 1-11 (two extra indent levels)
+
+```lua
+1  {
+2      "jessekelighine/vindent.nvim",
+3      config = function()
+4          local map = {
+5              motion = function(lhs, rhs) vim.keymap.set("", lhs, rhs) end,
+6              object = function(lhs, rhs) vim.keymap.set({ "x", "o" }, lhs, rhs) end,
+7          }
+8          map.motion("[=", "<Plug>(VindentBlockMotion_OO_prev)")
+9          map.motion("]=", "<Plug>(VindentBlockMotion_OO_next)")
+10         map.motion("[+", "<Plug>(VindentMotion_more_prev)")
+11         map.motion("]+", "<Plug>(VindentMotion_more_next)")
+12         map.motion("[-", "<Plug>(VindentMotion_less_prev)")
+13         map.motion("]-", "<Plug>(VindentMotion_less_next)")
+14         map.motion("[;", "<Plug>(VindentMotion_diff_prev)")
+15         map.motion("];", "<Plug>(VindentMotion_diff_next)")
+16         map.motion("[p", "<Plug>(VindentBlockEdgeMotion_XX_prev)")
+17         map.motion("]p", "<Plug>(VindentBlockEdgeMotion_XX_next)")
+18         map.object("ii", "<Plug>(VindentObject_XX_ii)")
+19         map.object("ai", "<Plug>(VindentObject_XX_ai)")
+20         map.object("aI", "<Plug>(VindentObject_XX_aI)")
+21     end
+22 },
+```
+
+- If the cursor is on line 5, `vii` selects lines 5-6.
+- If the cursor is on line 5, `vaI` selects lines 4-7.
+- If the cursor is on line 5, `v1ii` selects lines 4-20. (one extra indent level)
+- If the cursor is on line 5, `v1aI` selects lines 3-21. (one extra indent level)
+- If the cursor is on line 5, `v2ii` selects lines 2-21. (two extra indent levels)
+- If the cursor is on line 5, `v2aI` selects lines 1-22. (two extra indent levels)
 
 #### Text Objects: Full List
 
