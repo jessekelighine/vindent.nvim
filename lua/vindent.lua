@@ -8,6 +8,10 @@ local is_valid = function(line)
 	return line >= 1 and line <= vim.fn.line("$")
 end
 
+local do_escape = function()
+	vim.fn.execute("norm! " .. vim.api.nvim_eval('"\\<Esc>"'))
+end
+
 -- Indentation Handling -------------------------------------------------------
 
 local compare = {
@@ -94,15 +98,13 @@ end
 local do_object = function(range)
 	local diff = range[2] - range[1]
 	local move = diff == 0 and "" or diff .. "j"
-	local command = "norm! " .. range[1] .. "G" .. "V" .. move
+	local command = "norm!" .. (range[1] .. "G") .. "V" .. move
 	vim.fn.execute(command)
 end
 
--- Module ---------------------------------------------------------------------
+-- Motions and Objects --------------------------------------------------------
 
-local M = {}
-
-M.Motion = function(direction, skip, func, mode, count)
+local Motion = function(direction, skip, func, mode, count)
 	local line = vim.fn.line(".")
 	local to = vim.fn.line(".")
 	for _ = 1, count do
@@ -115,7 +117,7 @@ M.Motion = function(direction, skip, func, mode, count)
 	do_motion(direction, mode, vim.fn.abs(line - to))
 end
 
-M.BlockMotion = function(direction, skip, func, mode, count)
+local BlockMotion = function(direction, skip, func, mode, count)
 	local line = vim.fn.line(".")
 	local to = vim.fn.line(".")
 	for _ = 1, count do
@@ -129,7 +131,7 @@ M.BlockMotion = function(direction, skip, func, mode, count)
 	do_motion(direction, mode, vim.fn.abs(line - to))
 end
 
-M.BlockEdgeMotion = function(direction, skip, func, mode)
+local BlockEdgeMotion = function(direction, skip, func, mode)
 	local line = vim.fn.line(".")
 	local edge = find_til_not(direction, func, skip, line)
 	if direction == "next" then
@@ -140,7 +142,7 @@ M.BlockEdgeMotion = function(direction, skip, func, mode)
 	do_motion(direction, mode, vim.fn.abs(line - edge))
 end
 
-M.Object = function(skip, func, code, count)
+local Object = function(skip, func, code, count)
 	local get_full_range = function(range)
 		return {
 			find_til_not("prev", func, skip, range[1]),
@@ -190,6 +192,94 @@ M.Object = function(skip, func, code, count)
 	if string.sub(code, 1, 1) == "a" then range[1] = find_til("prev", "less", true, range[1]) end
 	if string.sub(code, 2, 2) == "I" then range[2] = find_til("next", "less", true, range[2]) end
 	do_object(range)
+end
+
+-- Interface ------------------------------------------------------------------
+
+local M = { map = {} }
+
+---@class opts.Blockwise
+---@field skip_empty_lines boolean: whether to skip "empty lines" when searching for text block boundaries
+---@field skip_more_indented_lines boolean: whether to skip "more-indented lines" when searching for text block boundaries
+
+---@param opts opts.Blockwise: blockwise motion/object options
+local blockwise_opts_code = function(opts)
+	local code1 = opts.skip_empty_lines and "X" or "O"
+	local code2 = opts.skip_more_indented_lines and "X" or "O"
+	return "(blockwise opts: " .. code1 .. code2 .. ")"
+end
+
+---@param key_sequences string[]: a table with keys `prev` and `next` to define key bindings
+---@param motion_type string: `same`, `less`, `more`, or `diff` to indicate motion type
+M.map.Motion = function(key_sequences, motion_type)
+	for _, mode in pairs({ "n", "o", "x" }) do
+		for direction, key_sequence in pairs(key_sequences) do
+			local desc = "Vindent Motion: " .. motion_type .. " " .. direction
+			vim.keymap.set(mode, key_sequence,
+				function()
+					local count = vim.v.count1
+					do_escape()
+					Motion(direction, true, motion_type, mode, count)
+				end,
+				{ desc = desc }
+			)
+		end
+	end
+end
+
+---@param key_sequences string[]: a table with keys `prev` and `next` to define key bindings
+---@param opts opts.Blockwise: blockwise motion/object options
+M.map.BlockMotion = function(key_sequences, opts)
+	local func = opts.skip_more_indented_lines and "nole" or "same"
+	for _, mode in pairs({ "n", "o", "x" }) do
+		for direction, key_sequence in pairs(key_sequences) do
+			local desc = "Vindent BlockMotion: " .. blockwise_opts_code(opts) .. " " .. direction
+			vim.keymap.set(mode, key_sequence,
+				function()
+					local count = vim.v.count1
+					do_escape()
+					BlockMotion(direction, opts.skip_empty_lines, func, mode, count)
+				end,
+				{ desc = desc }
+			)
+		end
+	end
+end
+
+---@param key_sequences string[]: a table with keys `prev` and `next` to define key bindings
+---@param opts opts.Blockwise: blockwise motion/object options
+M.map.BlockEdgeMotion = function(key_sequences, opts)
+	local func = opts.skip_more_indented_lines and "nole" or "same"
+	for _, mode in pairs({ "n", "o", "x" }) do
+		for direction, key_sequence in pairs(key_sequences) do
+			local desc = "Vindent BlockEdgeMotion: " .. blockwise_opts_code(opts) .. " " .. direction
+			vim.keymap.set(mode, key_sequence,
+				function()
+					do_escape()
+					BlockEdgeMotion(direction, opts.skip_empty_lines, func, mode)
+				end,
+				{ desc = desc }
+			)
+		end
+	end
+end
+
+---@param key_sequence string: left-hand side of mapping, key sequence
+---@param object_type string: `ii` `ai`, or `aI` to indicate type of object
+---@param opts opts.Blockwise: blockwise motion/object options
+M.map.Object = function(key_sequence, object_type, opts)
+	local func = opts.skip_more_indented_lines and "nole" or "same"
+	for _, mode in pairs({ "o", "x" }) do
+		local desc = "Vindent Object: " .. blockwise_opts_code(opts) .. " " .. object_type
+		vim.keymap.set(mode, key_sequence,
+			function()
+				local count = vim.g.vindent_count == 1 and vim.v.count1 or vim.v.count
+				do_escape()
+				Object(opts.skip_empty_lines, func, object_type, count)
+			end,
+			{ desc = desc }
+		)
+	end
 end
 
 return M
