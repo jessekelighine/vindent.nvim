@@ -115,15 +115,16 @@ string of `O`'s and `X`'s in their names. This string indicates how the motion
 or object defines a "text block". The first character indicates whether "empty
 lines" are considered to be boundaries of a text block. The second character
 indicates whether "lines with more indentation" are considered boundaries of a
-text block. That is,
+text block. That is, a/an
 
-|      | Empty line       | More-indented line |
-| :--- | :---             | :---               |
-| `OO` | boundary         | boundary           |
-| `XO` | **NOT** boundary | boundary           |
-| `OX` | boundary         | **NOT** boundary   |
-| `XX` | **NOT** boundary | **NOT** boundary   |
+|      | Empty line         | More-indented line |
+| :--- | :---               | :---               |
+| `OO` | is **NOT** skipped | is **NOT** skipped |
+| `XO` | is skipped         | is **NOT** skipped |
+| `OX` | is **NOT** skipped | is skipped         |
+| `XX` | is skipped         | is skipped         |
 
+when searching for boundaries of a text block. 
 See the example below.
 
 #### Block-wise Motions: Examples
@@ -149,7 +150,7 @@ is itself a block, and lines 8-9 is the third block.
 
 If the cursor is on line 2, then pressing `]p` moves the cursor to line 9. This
 is because `]p` is mapped to `<Plug>(VindentBlockEdgeMotion_XX_next)`, where
-`XX` indicates that "empty lines" and "more-indented lines" are all ignored
+`XX` indicates that "empty lines" and "more-indented lines" are all skipped
 (not boundaries), thus line 2 to line 9 is considered to be one text block.
 
 #### Block-wise Motions: Full List
