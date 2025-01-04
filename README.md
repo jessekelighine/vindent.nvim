@@ -18,6 +18,11 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 > differences in naming and default settings. I find it a bit easier to deal
 > with edge cases in Lua, thus why this plugin is created.
 
+> **NOTE**:
+> The [`experimental`](https://github.com/jessekelighine/vindent.nvim/tree/experimental) branch
+> explores an alternative approach to defining key mappings (avoiding the use of `<Plug>`),
+> which may feel more intuitive and less vimscript-ish.
+
 ## Installation and Quick Start
 
 With [lazy.nvim](https://github.com/folke/lazy.nvim):
