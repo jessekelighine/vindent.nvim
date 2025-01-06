@@ -12,13 +12,14 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 	- Select text block plus a previous line with less indentation.
 	- Select text block plus a previous and a next line with less indentation.
 
-> **NOTE**: This plugin is the Lua version of
+> [!NOTE]
+> This plugin is the Lua version of
 > [vindent.vim](https://github.com/jessekelighine/vindent.vim), which was
 > written in Vimscript. The two plugins are practically the same, with minor
 > differences in naming and default settings. I find it a bit easier to deal
 > with edge cases in Lua, thus why this plugin is created.
 
-> **NOTE**:
+> [!NOTE]
 > The [`experimental`](https://github.com/jessekelighine/vindent.nvim/tree/experimental) branch
 > explores an alternative approach to defining key mappings (avoiding the use of `<Plug>`),
 > which may feel more intuitive and less vimscript-ish.
