@@ -99,11 +99,17 @@ These are defined with function `Motion`.
 | `BlockMotion`     | move to the previous/next text block of same indent |
 | `BlockEdgeMotion` | move to the beginning/end of current text block     |
 
-All motions and objects that operates *block-wise* need to be told how a text block should be defined.
-In particular, they need to be told what kind of lines are considered "boundaries" of a text block.
-This is done by a table (class `BlockOpts`), passed to functions `BlockMotion`, `BlockEdgeMotion`, and `Object`,
-with two boolean values: `skip_empty_lines` and `skip_more_indented_lines`.
-Tables `strict`, `contiguous`, and `loose` defined in [quick start](#installation-and-quick-start) are examples of `BlockOpts`.
+All motions and objects that work *block-wise* need to know how to define a
+text block. Specifically, they need to understand what kinds of lines act as
+"boundaries" for a text block. This is configured using a `BlockOpts` table,
+which is passed to functions like `BlockMotion`, `BlockEdgeMotion`, and
+`Object`. The table includes two boolean options: 
+
+- `skip_empty_lines`: whether to *skip* empty lines when searching for boundaries.
+- `skip_more_indented_lines`: whether to *skip* lines with more indentation when searching for boundaries.
+
+You can use predefined `BlockOpts` tables like `strict`, `contiguous`, and
+`loose`, as shown in the [quick start](#installation-and-quick-start) section.
 See example below.
 
 #### Block-wise Motions: Examples
