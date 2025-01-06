@@ -12,7 +12,8 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 	- Select text block plus a previous line with less indentation.
 	- Select text block plus a previous and a next line with less indentation.
 
-> **NOTE**: This plugin is the Lua version of
+> [!NOTE]
+> This plugin is the Lua version of
 > [vindent.vim](https://github.com/jessekelighine/vindent.vim), which was
 > written in Vimscript. The two plugins are practically the same, with minor
 > differences in configuration and default settings. I find it a bit easier to
