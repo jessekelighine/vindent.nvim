@@ -1,18 +1,8 @@
 -- lua/vindent.lua
 
----@class GlobalSettings
----@field begin? boolean: see |vindent.nvim-global-settings|
----@field jumps? boolean: see |vindent.nvim-global-settings|
----@field noisy? boolean: see |vindent.nvim-global-settings|
----@field infer? boolean: see |vindent.nvim-global-settings|
-
 ---@class BlockOpts
 ---@field skip_empty_lines boolean: whether to skip "empty lines" when searching for text block boundaries
 ---@field skip_more_indented_lines boolean: whether to skip "more-indented lines" when searching for text block boundaries
-
----@class KeySequences
----@field prev string: key sequence for motion backward
----@field next string: key sequence for motion forward
 
 -- Helper Functions -----------------------------------------------------------
 
@@ -23,13 +13,13 @@ helper.escape = function()
 	vim.fn.execute("norm! " .. vim.api.nvim_eval('"\\<Esc>"'))
 end
 
----@param opts BlockOpts: block-wise motion/object options
+---@param opts BlockOpts: block-wise motion/object options (table)
 ---@return string: `func` that corresponds to `BlockOpts`
 helper.block_opts_func = function(opts)
 	return opts.skip_more_indented_lines and "nole" or "same"
 end
 
----@param opts BlockOpts: block-wise motion/object options
+---@param opts BlockOpts: block-wise motion/object options (table)
 ---@return string: description code for `BlockOpts`
 helper.block_opts_code = function(opts)
 	local code1 = opts.skip_empty_lines and "X" or "O"
@@ -53,7 +43,7 @@ local M = { map = {} }
 
 local vindent = require("vindent-core")
 
----@param opts GlobalSettings: table with fields `"begin"`, `"jumps"`, `"noisy"` and `"infer"` corresponding to the global settings
+---@param opts table: table with fields `"begin"`, `"jumps"`, `"noisy"` or `"infer"`, corresponding to the global settings
 M.setup = function(opts)
 	if opts.begin ~= nil then vim.g.vindent_begin = opts.begin end
 	if opts.jumps ~= nil then vim.g.vindent_jumps = opts.jumps end
@@ -61,7 +51,7 @@ M.setup = function(opts)
 	if opts.infer ~= nil then vim.g.vindent_infer = opts.infer end
 end
 
----@param key_sequences KeySequences: a table with fields `"prev"` and `"next"` to define key bindings
+---@param key_sequences table: a table with fields `"prev"` and `"next"` to define key bindings
 ---@param motion_type string: `"same"`, `"less"`, `"more"`, or `"diff"` to indicate motion type
 M.map.Motion = function(key_sequences, motion_type)
 	local name = "Motion"
@@ -77,8 +67,8 @@ M.map.Motion = function(key_sequences, motion_type)
 	end
 end
 
----@param key_sequences KeySequences: a table with fields `"prev"` and `"next"` to define key bindings
----@param opts BlockOpts: block-wise motion/object options
+---@param key_sequences table: a table with fields `"prev"` and `"next"` to define key bindings
+---@param opts BlockOpts: block-wise motion/object options (table)
 M.map.BlockMotion = function(key_sequences, opts)
 	local name = "BlockMotion"
 	local func = helper.block_opts_func(opts)
@@ -94,8 +84,8 @@ M.map.BlockMotion = function(key_sequences, opts)
 	end
 end
 
----@param key_sequences KeySequences: a table with fields `"prev"` and `"next"` to define key bindings
----@param opts BlockOpts: block-wise motion/object options
+---@param key_sequences table: a table with fields `"prev"` and `"next"` to define key bindings
+---@param opts BlockOpts: block-wise motion/object options (table)
 M.map.BlockEdgeMotion = function(key_sequences, opts)
 	local name = "BlockEdgeMotion"
 	local func = helper.block_opts_func(opts)
@@ -112,7 +102,7 @@ end
 
 ---@param key_sequence string: left-hand side of mapping, key sequence
 ---@param object_type string: `"ii"` `"ai"`, or `"aI"` to indicate type of object
----@param opts BlockOpts: block-wise motion/object options
+---@param opts BlockOpts: block-wise motion/object options (table)
 M.map.Object = function(key_sequence, object_type, opts)
 	local name = "Object"
 	local func = helper.block_opts_func(opts)
