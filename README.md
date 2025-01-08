@@ -14,7 +14,7 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 
 > [!NOTE]
 > This plugin is the Lua version of
-> [vindent.vim](https://github.com/jessekelighine/vindent.vim), which was
+> [`vindent.vim`](https://github.com/jessekelighine/vindent.vim), which was
 > written in Vimscript. The two plugins are practically the same, with minor
 > differences in naming and default settings. I find it a bit easier to deal
 > with edge cases in Lua, thus why this plugin is created.
