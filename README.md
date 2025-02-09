@@ -153,7 +153,7 @@ be one text block.
 | `ai`        | *an indent* | select block of same indent plus a previous line with less indent            |
 | `aI`        | *an Indent* | select block of same indent plus a previous and a next line with less indent |
 
-And object is defined with function `Object`.
+Text objects are defined with function `Object` as shown in [quick start](#installation-and-quick-start).
 Object `ai` is useful for selecting something like a Python function, and `aI`
 is useful for selecting something like a Lua function. As detailed in
 [block-wise motions](#block-wise-motions), you can change what is

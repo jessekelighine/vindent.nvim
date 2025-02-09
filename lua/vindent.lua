@@ -21,19 +21,22 @@ end
 
 ---@param opts BlockOpts: block-wise motion/object options (table)
 ---@return string: description code for `BlockOpts`
-helper.block_opts_code = function(opts)
-	local code1 = opts.skip_empty_lines and "X" or "O"
-	local code2 = opts.skip_more_indented_lines and "X" or "O"
-	return "(BlockOpts: " .. code1 .. code2 .. ")"
+helper.block_opts_desc = function(opts)
+	local wrap = function(code) return "(BlockOpts: " .. code .. ")" end
+	if opts.skip_empty_lines then
+		return wrap(opts.skip_more_indented_lines and "loose" or "flat")
+	else
+		return wrap(opts.skip_more_indented_lines and "contiguous" or "strict")
+	end
 end
 
 ---@param name string: `"Motion"`, `"BlockMotion"`, `"BlockEdgeMotion"`, or `"Object"`
 ---@param middle string|BlockOpts: middle part to put in description 
 ---@param ending string: either `direction` or `motion_type`
 ---@return string: description of mapping
-helper.desc = function(name, middle, ending)
+helper.get_desc = function(name, middle, ending)
 	name = "Vindent " .. name .. ":"
-	if type(middle) ~= "string" then middle = helper.block_opts_code(middle) end
+	if type(middle) ~= "string" then middle = helper.block_opts_desc(middle) end
 	return name .. " " .. middle .. " " .. ending
 end
 
@@ -56,7 +59,7 @@ end
 M.map.Motion = function(key_sequences, motion_type)
 	local name = "Motion"
 	for direction, key_sequence in pairs(key_sequences) do
-		local desc = helper.desc(name, motion_type, direction)
+		local desc = helper.get_desc(name, motion_type, direction)
 		for _, mode in pairs({ "n", "o", "x" }) do
 			vim.keymap.set(mode, key_sequence, function()
 				local count = vim.v.count1
@@ -73,7 +76,7 @@ M.map.BlockMotion = function(key_sequences, opts)
 	local name = "BlockMotion"
 	local func = helper.block_opts_func(opts)
 	for direction, key_sequence in pairs(key_sequences) do
-		local desc = helper.desc(name, opts, direction)
+		local desc = helper.get_desc(name, opts, direction)
 		for _, mode in pairs({ "n", "o", "x" }) do
 			vim.keymap.set(mode, key_sequence, function()
 				local count = vim.v.count1
@@ -90,7 +93,7 @@ M.map.BlockEdgeMotion = function(key_sequences, opts)
 	local name = "BlockEdgeMotion"
 	local func = helper.block_opts_func(opts)
 	for direction, key_sequence in pairs(key_sequences) do
-		local desc = helper.desc(name, opts, direction)
+		local desc = helper.get_desc(name, opts, direction)
 		for _, mode in pairs({ "n", "o", "x" }) do
 			vim.keymap.set(mode, key_sequence, function()
 				helper.escape()
@@ -106,7 +109,7 @@ end
 M.map.Object = function(key_sequence, object_type, opts)
 	local name = "Object"
 	local func = helper.block_opts_func(opts)
-	local desc = helper.desc(name, opts, object_type)
+	local desc = helper.get_desc(name, opts, object_type)
 	for _, mode in pairs({ "o", "x" }) do
 		vim.keymap.set(mode, key_sequence, function()
 			local count = vim.g.vindent_count == 1 and vim.v.count1 or vim.v.count

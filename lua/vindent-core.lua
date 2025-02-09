@@ -1,10 +1,10 @@
 -- lua/vindent-core.lua
 
-local is_empty = function(line)
+local empty = function(line)
 	return vim.fn.empty(vim.fn.getline(line)) == 1
 end
 
-local is_valid = function(line)
+local valid = function(line)
 	return line >= 1 and line <= vim.fn.line("$")
 end
 
@@ -19,18 +19,18 @@ local compare = {
 }
 
 local get_indent = function(line)
-	return is_empty(line) and -1 or vim.fn.indent(line)
+	return empty(line) and -1 or vim.fn.indent(line)
 end
 
 local infer_indent = function(line, infer)
 	infer = infer or vim.g.vindent_infer
-	if not infer or not is_empty(line) then
+	if not infer or not empty(line) then
 		return get_indent(line)
 	end
 	local line_prev = vim.fn.prevnonblank(line)
 	local line_next = vim.fn.nextnonblank(line)
-	local indent_prev = is_valid(line_prev) and get_indent(line_prev) or 0
-	local indent_next = is_valid(line_next) and get_indent(line_next) or 0
+	local indent_prev = valid(line_prev) and get_indent(line_prev) or 0
+	local indent_next = valid(line_next) and get_indent(line_next) or 0
 	local indent = vim.fn.max({ indent_prev, indent_next })
 	return indent == 0 and -1 or indent
 end
@@ -44,8 +44,8 @@ local find_til = function(direction, func, skip, start, base)
 	local step = direction == "next" and 1 or -1
 	while true do
 		line = line + step
-		if not is_valid(line) then return start end
-		if skip and is_empty(line) then goto continue end
+		if not valid(line) then return start end
+		if skip and empty(line) then goto continue end
 		if compare[func](get_indent(line), base_indent) then
 			return line
 		end
@@ -60,8 +60,8 @@ local find_til_not = function(direction, func, skip, start, base)
 	local step = direction == "next" and 1 or -1
 	while true do
 		line = line + step
-		if not is_valid(line) then return line - step end
-		if skip and is_empty(line) then goto continue end
+		if not valid(line) then return line - step end
+		if skip and empty(line) then goto continue end
 		if not compare[func](get_indent(line), base_indent) then
 			return line - step
 		end
@@ -159,9 +159,9 @@ M.Object = function(skip, func, code, count)
 		local new_indent = get_indent(new_line)
 		local base_indent = get_indent(base_line)
 		local less_indent = compare.less(new_indent, base_indent)
-		local valid = is_valid(new_line)
-		local not_empty = not is_empty(new_line)
-		return (less_indent and valid and not_empty) and new_line or base_line
+		local is_valid = valid(new_line)
+		local not_empty = not empty(new_line)
+		return (less_indent and is_valid and not_empty) and new_line or base_line
 	end
 
 	local line = vim.fn.line(".")
