@@ -26,6 +26,7 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim):
 ```lua
 {
 	"jessekelighine/vindent.nvim",
+    branch = "experimental",
 	config = function()
 		local vindent = require("vindent")
 		local block_opts = {
