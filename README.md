@@ -19,6 +19,10 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 > differences in configuration and default settings. Lua makes it easier to
 > handle edge cases, which is why this version was created.
 
+> [!NOTE]
+> The [`legacy`](https://github.com/jessekelighine/vindent.nvim/tree/legacy) branch
+> uses the same way of defining key mapping as in [`vindent.vim`](https://github.com/jessekelighine/vindent.vim),
+
 ## Installation and Quick Start
 
 With [lazy.nvim](https://github.com/folke/lazy.nvim):
@@ -26,7 +30,6 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim):
 ```lua
 {
 	"jessekelighine/vindent.nvim",
-	branch = "experimental",
 	config = function()
 		local vindent = require("vindent")
 		local block_opts = {
@@ -203,7 +206,23 @@ Also, all text objects can take `[count]`, which makes the text objects select
 | `vim.g.vindent_noisy` | boolean (default: `false`) | whether motion throws an error if the cursor does not move     |
 | `vim.g.vindent_infer` | boolean (default: `false`) | whether to infer indent of empty lines by context              |
 
-You can also use the function `setup` (as shown in [quick start](#installation-and-quick-start)) to set these variables.
+You can use the function `setup` as shown in [quick start](#installation-and-quick-start) to set these variables.
+One can also define custome functions to toggle these settings.
+For example, the following defines command `VindentNoisy` to toggle `vim.g.vindent_noisy`:
+```lua
+vim.api.nvim_create_user_command(
+	"VindentNoisy",
+	function(opts)
+		if not opts.bang then
+			vim.g.vindent_noisy = not vim.g.vindent_noisy
+		end
+		local status = vim.g.vindent_noisy and "ON" or "OFF"
+		local message = "'" .. ( ":VindentNoisy " .. status ) .. "'"
+		vim.cmd.echo(message)
+	end,
+	{ bang = true }
+)
+```
 
 ## Licence
 
