@@ -109,8 +109,8 @@ M.Motion = function(direction, skip, func, mode, count)
 		to = find_til(direction, func, skip, to)
 	end
 	if vim.g.vindent_noisy and line == to then
-		local error_message = "Motion Not Applicable"
-		vim.api.nvim_err_writeln(error_message)
+		local error_message = "Error: Motion Not Applicable"
+		vim.api.nvim_echo({{ error_message }}, true, { err = true })
 	end
 	do_motion(direction, mode, vim.fn.abs(line - to))
 end
@@ -123,8 +123,8 @@ M.BlockMotion = function(direction, skip, func, mode, count)
 		to = find_til(direction, "same", skip, edge, to)
 	end
 	if vim.g.vindent_noisy and line == to then
-		local error_message = "Block Motion Not Applicable"
-		vim.api.nvim_err_writeln(error_message)
+		local error_message = "Error: Block Motion Not Applicable"
+		vim.api.nvim_echo({{ error_message }}, true, { err = true })
 	end
 	do_motion(direction, mode, vim.fn.abs(line - to))
 end
