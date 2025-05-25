@@ -137,6 +137,10 @@ M.BlockEdgeMotion = function(direction, skip, func, mode)
 	else
 		edge = vim.fn.nextnonblank(edge)
 	end
+	if vim.g.vindent_noisy and line == edge then
+		local error_message = "Error: Block Edge Motion Not Applicable"
+		vim.api.nvim_echo({{ error_message }}, true, { err = true })
+	end
 	do_motion(direction, mode, vim.fn.abs(line - edge))
 end
 
