@@ -104,7 +104,8 @@ M.Motion = function(direction, skip, func, mode, count)
 	local line = vim.fn.line(".")
 	local to = vim.fn.line(".")
 	for _ = 1, count do
-		to = find_til(direction, func, skip, to)
+		local new_to = find_til(direction, func, skip, to)
+		if new_to == to then break else to = new_to end
 	end
 	if vim.g.vindent_noisy and line == to then
 		local error_message = "Error: Motion Not Applicable"
@@ -119,6 +120,7 @@ M.BlockMotion = function(direction, skip, func, mode, count)
 	for _ = 1, count do
 		local edge = find_til_not(direction, func, skip, to)
 		to = find_til(direction, "same", skip, edge, to)
+		if to == edge then break end
 	end
 	if vim.g.vindent_noisy and line == to then
 		local error_message = "Error: Block Motion Not Applicable"
@@ -186,7 +188,9 @@ M.Object = function(skip, func, code, count)
 			end
 		end
 		full_range = get_full_range(test_range)
-		range = get_range(full_range)
+		local new_range = get_range(full_range)
+		local no_range_change = new_range[1] == range[1] and new_range[2] == range[2]
+		if no_range_change then break else range = new_range end
 	end
 
 	if string.sub(code, 1, 1) == "a" then range[1] = find_til("prev", "less", true, range[1]) end
