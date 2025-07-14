@@ -69,13 +69,12 @@ local find_til_not = function(direction, func, skip, start, base)
 	end
 end
 
-local do_motion = function(direction, mode, diff)
+local do_motion = function(mode, from, to)
 	local mark = vim.g.vindent_jumps and "m'" or ""
-	-- local move = diff .. (direction == "next" and "j" or "k") -- incompat. with folds!
-	local move = vim.fn.line(".") + (diff * (direction == "next" and 1 or -1)) .. "G"
+	local move = to .. "G"
 	local escape = vim.api.nvim_eval('"\\<Esc>"')
 	local finish = vim.g.vindent_begin and "_" or ""
-	if diff == 0 then
+	if from == to then
 		local command = {
 			n = "norm!" .. "lh" .. finish,
 			x = "norm!" .. "gv",
@@ -93,9 +92,7 @@ local do_motion = function(direction, mode, diff)
 end
 
 local do_object = function(range)
-	local diff = range[2] - range[1]
-	local move = diff == 0 and "" or diff .. "j"
-	local command = "norm!" .. (range[1] .. "G") .. "V" .. move
+	local command = "norm!" .. (range[1] .. "G") .. "V" .. (range[2] .. "G")
 	vim.fn.execute(command)
 end
 
@@ -113,7 +110,7 @@ M.Motion = function(direction, skip, func, mode, count)
 		local error_message = "Error: Motion Not Applicable"
 		vim.api.nvim_echo({{ error_message }}, true, { err = true })
 	end
-	do_motion(direction, mode, vim.fn.abs(line - to))
+	do_motion(mode, line, to)
 end
 
 M.BlockMotion = function(direction, skip, func, mode, count)
@@ -127,7 +124,7 @@ M.BlockMotion = function(direction, skip, func, mode, count)
 		local error_message = "Error: Block Motion Not Applicable"
 		vim.api.nvim_echo({{ error_message }}, true, { err = true })
 	end
-	do_motion(direction, mode, vim.fn.abs(line - to))
+	do_motion(mode, line, to)
 end
 
 M.BlockEdgeMotion = function(direction, skip, func, mode)
@@ -142,7 +139,7 @@ M.BlockEdgeMotion = function(direction, skip, func, mode)
 		local error_message = "Error: Block Edge Motion Not Applicable"
 		vim.api.nvim_echo({{ error_message }}, true, { err = true })
 	end
-	do_motion(direction, mode, vim.fn.abs(line - edge))
+	do_motion(mode, line, edge)
 end
 
 M.Object = function(skip, func, code, count)
