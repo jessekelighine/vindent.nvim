@@ -71,7 +71,8 @@ end
 
 local do_motion = function(direction, mode, diff)
 	local mark = vim.g.vindent_jumps and "m'" or ""
-	local move = diff .. (direction == "next" and "j" or "k")
+	-- local move = diff .. (direction == "next" and "j" or "k") -- incompat. with folds!
+	local move = vim.fn.line(".") + (diff * (direction == "next" and 1 or -1)) .. "G"
 	local escape = vim.api.nvim_eval('"\\<Esc>"')
 	local finish = vim.g.vindent_begin and "_" or ""
 	if diff == 0 then
