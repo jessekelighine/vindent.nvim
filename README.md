@@ -168,15 +168,15 @@ Also, all text objects can take `[count]`, which makes the text objects select
 #### Text Objects: Examples
 
 ```lua
-1  local DoubleSumTo = function(number)
-2
-3      local sum = 0
-4      for i = 1, number do
-5          print("This is the " .. i .. "-th loop")
-6
-7          for j = 1, number do
-8              print("This is the " .. j .. "-th inner loop.")
-9              sum = i + j
+ 1 local DoubleSumTo = function(number)
+ 2
+ 3     local sum = 0
+ 4     for i = 1, number do
+ 5         print("This is the " .. i .. "-th loop")
+ 6
+ 7         for j = 1, number do
+ 8             print("This is the " .. j .. "-th inner loop.")
+ 9             sum = i + j
 10         end
 11
 12     end
