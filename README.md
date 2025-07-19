@@ -96,24 +96,24 @@ These are defined with function `Motion`.
 
 ### Block-wise Motions
 
-`vindent.nvim` provides two types of text objects:
+`vindent.nvim` provides two types of *block-wise* motions:
 
 | Motion            | Description                                         |
 | :---              | :---                                                |
 | `BlockMotion`     | move to the previous/next text block of same indent |
 | `BlockEdgeMotion` | move to the beginning/end of current text block     |
 
-All motions and objects that work *block-wise* need to know how to define a
-text block. Specifically, they need to understand what kinds of lines act as
-"boundaries" for a text block. This is configured using a `BlockOpts` table,
-which is passed to functions like `BlockMotion`, `BlockEdgeMotion`, and
-`Object`. The table includes two boolean options: 
+All motions and [objects](#text-objects) that operate *block-wise* need to know
+how to define a text block. Specifically, they need to know what kinds of lines
+act as "boundaries" for a text block. This is configured using a `BlockOpts`
+table, which is passed to functions like `BlockMotion`, `BlockEdgeMotion`, and
+`Object`. The table contains two boolean fields: 
 
 - `skip_empty_lines`: whether to *skip* empty lines when searching for boundaries.
 - `skip_more_indented_lines`: whether to *skip* lines with more indentation when searching for boundaries.
 
 You can use predefined `BlockOpts` tables like `strict`, `contiguous`, and
-`loose`, as shown in the [quick start](#installation-and-quick-start) section.
+`loose` as shown in the [quick start](#installation-and-quick-start) section.
 See example below.
 
 #### Block-wise Motions: Examples
@@ -132,10 +132,10 @@ See example below.
 ```
 
 If the cursor is on line 2, then pressing `]=` 2 times moves the cursor to line
-6 and 8. This is because `strict` is used for `]=`, meaning that "empty lines"
-and "more-indented lines" are all considered to be boundaries of a text block
-(*not* skipped). So lines 2-3 is one block, line 6 is itself a block, and lines
-8-9 is the third block.
+6 and and then to line 8. This is because `strict` is used for `]=`, meaning
+that "empty lines" and "more-indented lines" are all considered to be
+boundaries of a text block (*not* skipped). So lines 2-3 is one block, line 6
+is itself a block, and lines 8-9 is the third block.
 
 If the cursor is on line 2, then pressing `]p` moves the cursor to line 9. This
 is because `loose` is used for `]p`, meaning that "empty lines" and
@@ -163,7 +163,7 @@ is useful for selecting something like a Lua function. As detailed in
 [block-wise motions](#block-wise-motions), you can change what is
 considered to be a *text block* by setting the values in `BlockOpts` table.
 Also, all text objects can take `[count]`, which makes the text objects select
-`[count]` additional indent levels around. See the example below.
+`[count]` additional indent levels. See the example below.
 
 #### Text Objects: Examples
 
