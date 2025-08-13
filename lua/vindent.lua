@@ -46,10 +46,9 @@ local M = { map = {} }
 
 local vindent = require("vindent-core")
 
----@param opts table: table with fields `"begin"`, `"jumps"`, `"noisy"` or `"infer"`, corresponding to the global settings
+---@param opts table: table with fields `"begin"`, `"noisy"` or `"infer"`, corresponding to the global settings
 M.setup = function(opts)
 	if opts.begin ~= nil then vim.g.vindent_begin = opts.begin end
-	if opts.jumps ~= nil then vim.g.vindent_jumps = opts.jumps end
 	if opts.noisy ~= nil then vim.g.vindent_noisy = opts.noisy end
 	if opts.infer ~= nil then vim.g.vindent_infer = opts.infer end
 end

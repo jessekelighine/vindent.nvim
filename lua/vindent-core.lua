@@ -70,22 +70,21 @@ local find_til_not = function(direction, func, skip, start, base)
 end
 
 local do_motion = function(mode, from, to)
-	local mark = vim.g.vindent_jumps and "m'" or ""
 	local move = to .. "G"
 	local escape = vim.api.nvim_eval('"\\<Esc>"')
-	local finish = vim.g.vindent_begin and "_" or ""
+	local begin = vim.g.vindent_begin and "_" or ""
 	if from == to then
 		local command = {
-			n = "norm!" .. "lh" .. finish,
+			n = "norm!" .. "lh" .. begin,
 			x = "norm!" .. "gv",
 			o = "norm!" .. "V",
 		}
 		vim.fn.execute(command[mode])
 	else
 		local command = {
-			n = "norm!" .. mark .. move .. finish,
-			x = "norm!" .. escape .. mark .. "gv" .. move .. finish,
-			o = "norm!" .. mark .. "V" .. move .. finish,
+			n = "norm!" .. move .. begin,
+			x = "norm!" .. escape .. "gv" .. move .. begin,
+			o = "norm!" .. "V" .. move .. begin,
 		}
 		vim.fn.execute(command[mode])
 	end

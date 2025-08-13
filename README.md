@@ -47,7 +47,7 @@ With [lazy.nvim](https://github.com/folke/lazy.nvim):
 		vindent.map.Object("ii", "ii", block_opts.loose)
 		vindent.map.Object("ai", "ai", block_opts.loose)
 		vindent.map.Object("aI", "aI", block_opts.loose)
-		vindent.setup { begin = false }
+		vim.g.vindent_begin = false
 	end
 },
 ```
@@ -202,26 +202,22 @@ Also, all text objects can take `[count]`, which makes the text objects select
 | Setting               | Value                      | Description                                                    |
 | :---                  | :---                       | :---                                                           |
 | `vim.g.vindent_begin` | boolean (default: `true`)  | whether to move cursor to the beginning of line after a motion |
-| `vim.g.vindent_jumps` | boolean (default: `true`)  | whether a motion is added to the jumplist                      |
 | `vim.g.vindent_noisy` | boolean (default: `false`) | whether motion throws an error if the cursor does not move     |
 | `vim.g.vindent_infer` | boolean (default: `false`) | whether to infer indent of empty lines by context              |
 
-You can use the function `setup` as shown in [quick start](#installation-and-quick-start) to set these variables.
-One can also define custome functions to toggle these settings.
-For example, the following defines command `VindentNoisy` to toggle `vim.g.vindent_noisy`:
+In the [quick start](#installation-and-quick-start) section, `vim.g.vindent_begin` is set to `false`,
+which means that after a motion, the cursor stays at the same column instead of moving to the beginning of the line.
+One can define custome functions to toggle these settings, these settings can be changed on the fly.
+For example, the following defines command `VindentBegin` to toggle `vim.g.vindent_begin`:
 ```lua
-vim.api.nvim_create_user_command(
-	"VindentNoisy",
-	function(opts)
-		if not opts.bang then
-			vim.g.vindent_noisy = not vim.g.vindent_noisy
-		end
-		local status = vim.g.vindent_noisy and "ON" or "OFF"
-		local message = "'" .. ( ":VindentNoisy " .. status ) .. "'"
-		vim.cmd.echo(message)
-	end,
-	{ bang = true }
-)
+vim.api.nvim_create_user_command("VindentBegin", function(opts)
+  if not opts.bang then
+    vim.g.vindent_begin = not vim.g.vindent_begin
+  end
+  local status = vim.g.vindent_begin and "ON" or "OFF"
+  local message = ":VindentBegin " .. status
+  vim.notify(message, vim.log.levels.INFO)
+end, { bang = true })
 ```
 
 ## Licence
