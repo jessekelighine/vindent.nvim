@@ -14,10 +14,10 @@ is Neovim plugin that provides indentation related *motions* and *text objects*:
 
 > [!NOTE]
 > This plugin is the Lua version of
-> [`vindent.vim`](https://github.com/jessekelighine/vindent.vim), which was
-> written in Vimscript. The two plugins are practically the same, with minor
+> [`vindent.vim`](https://github.com/jessekelighine/vindent.vim).
+> The two plugins are practically the same, with minor
 > differences in configuration and default settings. Lua makes it easier to
-> handle edge cases, which is why this version was created.
+> handle edge cases, which is why this version is created.
 
 > [!NOTE]
 > The [`legacy`](https://github.com/jessekelighine/vindent.nvim/tree/legacy) branch
@@ -86,7 +86,7 @@ These are defined with function `Motion`.
  7         total += i
  8
  9     print(f"This is your total: {total}")
-10     return(total)
+10     return total
 ```
 
 - If cursor is on line 3, `[-` moves it to line 1.
